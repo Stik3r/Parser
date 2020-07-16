@@ -20,14 +20,15 @@ namespace Parser
                 name = "";
                 try
                 {
-                    string pageurl = RandomURL();
-                    name = pageurl.Remove(0, 16);
+                    string pageurl = RandomURL(ref name);
                     string picurl = GetUrl(new HtmlWeb().Load(pageurl));
                     SavePicture(client, picurl, name);
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Download picture " + name + " success");
                 }
-                catch
+                catch(Exception e)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Download picture " + name + " faled");
                     continue;
                 }
@@ -38,14 +39,17 @@ namespace Parser
         {
             return doc.DocumentNode.LastChild.LastChild.SelectSingleNode("//img[@class='no-click screenshot-image']").GetAttributeValue("src", "");
         }
-        public static string RandomURL()
+        public static string RandomURL(ref string name)
         {
             string[] symbol = "a b c d e f g h i j k l m n o p q  r s t u v w x y z 0 1 2 3 4 5 6 7 8 9".Split();
             string url = @"https://prnt.sc/";
             Random rand = new Random();
+            int randIndex;
             for (int i = 0; i < 6; i++)
             {
-                url += symbol[rand.Next(0, symbol.Length)];
+                randIndex = rand.Next(0, symbol.Length);
+                url += symbol[randIndex];
+                name += symbol[randIndex];
             }
             return url;
         }
